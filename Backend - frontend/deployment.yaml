@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aipply-app
+  labels:
+    app: aipply-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: aipply-app
+  template:
+    metadata:
+      labels:
+        app: aipply-app
+    spec:
+      containers:
+      - name: aipply-app
+        image: satheesh2003/aipply-frontend-backend:latest
+        ports:
+        - containerPort: 8080
+        env:
+        - name: MOCKSERVICE_URL
+          value: "http://mockservice-service:3001"   # talk to AI service
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: aipply-service
+spec:
+  selector:
+    app: aipply-app
+  ports:
+  - port: 8080
+    targetPort: 8080
+    nodePort: 30080
+  type: NodePort
