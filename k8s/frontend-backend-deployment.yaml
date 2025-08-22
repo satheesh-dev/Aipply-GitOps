@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aipply-frontend-backend
+  namespace: gitops-demo
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: aipply-frontend-backend
+  template:
+    metadata:
+      labels:
+        app: aipply-frontend-backend
+    spec:
+      containers:
+        - name: fe-be
+          image: satheesh2003/aipply-frontend-backend:latest
+          ports:
+            - containerPort: 80   # frontend
+            - containerPort: 8080 # backend
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fe-be-service
+  namespace: gitops-demo
+spec:
+  selector:
+    app: aipply-frontend-backend
+  ports:
+    - name: frontend
+      port: 80
+      targetPort: 80
+      nodePort: 30080
+    - name: backend
+      port: 8080
+      targetPort: 8080
+  type: NodePort
