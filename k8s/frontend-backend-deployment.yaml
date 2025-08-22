@@ -17,8 +17,7 @@ spec:
         - name: fe-be
           image: satheesh2003/aipply-frontend-backend:latest
           ports:
-            - containerPort: 80   # frontend
-            - containerPort: 8080 # backend
+            - containerPort: 8080   # ✅ backend also serves frontend
 ---
 apiVersion: v1
 kind: Service
@@ -29,11 +28,8 @@ spec:
   selector:
     app: aipply-frontend-backend
   ports:
-    - name: frontend
-      port: 80
-      targetPort: 80
-      nodePort: 30080
-    - name: backend
+    - name: web
       port: 8080
       targetPort: 8080
+      nodePort: 30080   # ✅ single NodePort for everything
   type: NodePort
