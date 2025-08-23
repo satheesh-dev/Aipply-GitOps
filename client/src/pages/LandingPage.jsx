@@ -35,6 +35,10 @@ const LandingPage = () => {
       name: "Jessica M.",
       text: "After using AIpply for just two weeks, I received three job offers! The AI-powered interview preparation made all the difference in my confidence and performance.",
     },
+    {
+      name: "Satheesh.T",
+      text: "After using AIpply for just two weeks, I received three job offers! The AI-powered interview preparation made all the difference in my confidence and performance.",
+    },
   ]
 
   // Words for TypewriterEffect
