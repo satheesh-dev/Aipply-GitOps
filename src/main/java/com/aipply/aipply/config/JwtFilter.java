@@ -33,7 +33,9 @@ public class JwtFilter extends OncePerRequestFilter {
     private final List<String> PERMITTED_PATHS = Arrays.asList(
             "/api/v1/register",
             "/api/v1/login",
-            "/api/v1/logout"
+            "/api/v1/logout",
+            "/api/v1/mock-questions/**",
+            "/api/v1/feedback/**"
     );
 
     @Override

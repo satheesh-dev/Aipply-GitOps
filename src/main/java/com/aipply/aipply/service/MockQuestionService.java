@@ -6,6 +6,7 @@ import com.aipply.aipply.model.User;
 import com.aipply.aipply.repository.MockQuestionsRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,11 +20,15 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class MockQuestionService {
 
+    @Value("${mockai.base-url}")
+    private String mockAiBaseUrl;
+
     private final MockQuestionsRepository mockQuestionsRepository;
     private final JobService jobService;
     private final UserService userService;
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
+
 
     public MockQuestions getQuestionById(int questionId) {
         if (questionId <= 0) {
@@ -46,7 +51,7 @@ public class MockQuestionService {
         if (job == null) {
             throw new IllegalArgumentException("Job not found with id: " + jobId);
         }
-        
+
         // Prepare request to Node.js server
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -61,14 +66,16 @@ public class MockQuestionService {
 
         List<MockQuestions> questions = new ArrayList<>();
         try {
-            // Call Node.js server
-//            ResponseEntity<String> response = restTemplate.postForEntity(
-//                "http://localhost:3001/generate-questions",
-//                request,
-//                String.class
-//            );
+            // Use configurable base URL
+
+            System.out.println("Mock AI Base URL: " + mockAiBaseUrl);
+            if (mockAiBaseUrl == null || mockAiBaseUrl.isEmpty()) {
+                throw new RuntimeException("Mock AI Base URL is not configured");
+            }
+            String url = mockAiBaseUrl + "/generate-questions";
+
             ResponseEntity<String> response = restTemplate.postForEntity(
-                    "https://mockai-service.onrender.com/generate-questions",
+                    url,
                     request,
                     String.class
             );
@@ -83,13 +90,13 @@ public class MockQuestionService {
                 if (Boolean.TRUE.equals(responseBody.get("success"))) {
                     @SuppressWarnings("unchecked")
                     List<Map<String, String>> qaList = (List<Map<String, String>>) responseBody.get("data");
-                    
+
                     for (Map<String, String> qa : qaList) {
                         String question = qa.get("question");
                         String answer = qa.get("answer");
 
                         // Validate question and answer
-                        if (question == null || question.trim().isEmpty() || 
+                        if (question == null || question.trim().isEmpty() ||
                             answer == null || answer.trim().isEmpty()) {
                             continue; // Skip invalid entries
                         }
@@ -112,7 +119,7 @@ public class MockQuestionService {
                 throw new RuntimeException("Failed to generate questions from Node.js server");
             }
         } catch (Exception e) {
-            throw new RuntimeException("Failed to generate mock questions: " + e.getMessage());
+            throw new RuntimeException("Failed to generate mock questions: " + e.getMessage(), e);
         }
 
         return questions;
@@ -166,4 +173,3 @@ public class MockQuestionService {
         return questions;
     }
 }
-
