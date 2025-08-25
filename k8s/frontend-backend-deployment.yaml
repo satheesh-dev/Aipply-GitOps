@@ -18,6 +18,9 @@ spec:
           image: satheesh2003/aipply-frontend-backend:713e1ff
           ports:
             - containerPort: 8080
+          envFrom:
+            - secretRef:
+                name: db-secret   # ✅ Inject DB credentials from Secret
 ---
 apiVersion: v1
 kind: Service
