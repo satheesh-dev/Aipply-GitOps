@@ -20,7 +20,7 @@ spec:
             - containerPort: 8080
           envFrom:
             - secretRef:
-                name: db-secret   # ✅ Inject DB credentials from Secret
+                name: db-secret   # ✅ pulls DB_URL, DB_USERNAME, DB_PASSWORD
 ---
 apiVersion: v1
 kind: Service
