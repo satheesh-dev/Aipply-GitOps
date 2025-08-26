@@ -15,12 +15,25 @@ spec:
     spec:
       containers:
         - name: fe-be
-          image: satheesh2003/aipply-frontend-backend:767861e
+          image: satheesh2003/aipply-frontend-backend:713e1ff
           ports:
             - containerPort: 8080
-          envFrom:
-            - secretRef:
-                name: db-secret   # ✅ pulls DB_URL, DB_USERNAME, DB_PASSWORD
+          env:
+            - name: SPRING_DATASOURCE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: url
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: username
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: password
 ---
 apiVersion: v1
 kind: Service
@@ -32,7 +45,7 @@ spec:
     app: aipply-frontend-backend
   ports:
     - name: web
-      port: 8080       # service port
-      targetPort: 8080 # matches containerPort
-      nodePort: 30080  # NodePort on minikube
+      port: 8080       # Service port
+      targetPort: 8080 # Container port
+      nodePort: 30080  # Minikube NodePort
   type: NodePort
