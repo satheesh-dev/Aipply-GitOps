@@ -1,9 +1,9 @@
-name: Build and Push Docker Image
+name: Build and Push Docker Images
 
 on:
   push:
     branches:
-      - main   # or "master" or whichever branch you want to trigger builds
+      - main   # adjust if you use "master" or another branch
 
 jobs:
   build:
@@ -21,17 +21,25 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      # Step 3: Build Docker image
-      - name: Build Docker image
+      # Step 3: Create frontend .env file for Vite build
+      - name: Create frontend .env
         run: |
-          IMAGE_NAME=satheesh2003/aipply-frontend-backend
-          GIT_SHA=${{ github.sha }}
-          docker build -t $IMAGE_NAME:v2 -t $IMAGE_NAME:${GIT_SHA::7} .
+          echo "VITE_BACKEND_URL=http://localhost:8080/api" > client/.env
 
-      # Step 4: Push Docker image to Docker Hub
-      - name: Push Docker image
+      # Step 4: Build and push Fullstack (Frontend + Backend) image
+      - name: Build and push fullstack app
         run: |
           IMAGE_NAME=satheesh2003/aipply-frontend-backend
           GIT_SHA=${{ github.sha }}
-          docker push $IMAGE_NAME:v2
+          docker build -t $IMAGE_NAME:latest -t $IMAGE_NAME:${GIT_SHA::7} .
+          docker push $IMAGE_NAME:latest
+          docker push $IMAGE_NAME:${GIT_SHA::7}
+
+      # Step 5: Build and push NodeMockQuestionService image
+      - name: Build and push NodeMockQuestionService
+        run: |
+          IMAGE_NAME=satheesh2003/aipply-nodemockservice
+          GIT_SHA=${{ github.sha }}
+          docker build -t $IMAGE_NAME:latest -t $IMAGE_NAME:${GIT_SHA::7} ./NodeMockQuestionService
+          docker push $IMAGE_NAME:latest
           docker push $IMAGE_NAME:${GIT_SHA::7}
