@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: fe-be
-          image: satheesh2003/aipply-frontend-backend:42748c8
+          image: satheesh2003/aipply-frontend-backend:latest
           ports:
             - containerPort: 8080
           env:
