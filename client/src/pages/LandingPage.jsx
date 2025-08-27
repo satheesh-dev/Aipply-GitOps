@@ -107,7 +107,7 @@ const LandingPage = () => {
         "https://images.pexels.com/photos/1587009/pexels-photo-1587009.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
     },
     {
-      name: "theja ashwin A.",
+      name: "Satheesh T.",
       title: "Product Manager",
       text: "After using AIpply for just two weeks, I received three job offers! The AI-powered interview preparation made all the difference in my confidence and performance.",
       avatar:
