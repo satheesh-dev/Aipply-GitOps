@@ -60,6 +60,7 @@ kubectl create namespace gitops-demo
 *Point it to your GitHub repo
 *Select gitops-demo namespace
 *Sync the app
+
 7️⃣ Check Running Pods
 ```
 kubectl get pods -n gitops-demo
